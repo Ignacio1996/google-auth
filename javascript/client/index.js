@@ -5,6 +5,10 @@ const login = async () => {
 
   const data = await req.json();
 
-  console.log("data", data);
-  return data;
+  console.log("redirecting to ", data);
+
+  // Redirect to the authLink
+  window.location.href = await data.authUrl;
+
+  //   return data;
 };

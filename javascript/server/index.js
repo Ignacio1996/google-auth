@@ -43,7 +43,7 @@ app.get("/redirect", (req, res) => {
   // Exchange the code for an access token
   const url = "https://oauth2.googleapis.com/token";
 
-  res.redirect("http://localhost:3000");
+  res.redirect("http://127.0.0.1:3000");
 });
 
 app.listen(port, () => {
