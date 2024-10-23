@@ -22,25 +22,18 @@ app.get("/authlink", async (req, res) => {
       console.error("Error generating auth URL:", error);
       res.status(500).json({ error: "Failed to generate auth URL" });
     });
-  // Make sure to replace "YOUR_CLIENT_ID" and "YOUR_REDIRECT_URI" with your actual client ID and redirect URI
-
-  // create a request to the google auth link route to generate the auth link with the environment variables
-  // return the auth link to the client
-  //   https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow
 });
 
 app.get("/redirect", (req, res) => {
   // Extract the code from the query parameters
   const code = req.query.code;
 
-  // Make sure to replace "YOUR_CLIENT_ID" and
-  // "YOUR
-  // _CLIENT_SECRET" with your actual client ID and client secret
+  console.log("Received code:", code);
+
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
   const redirectUri = "http://localhost:8080/redirect";
 
-  // Exchange the code for an access token
   const url = "https://oauth2.googleapis.com/token";
 
   res.redirect("http://127.0.0.1:3000");
