@@ -24,19 +24,35 @@ app.get("/authlink", async (req, res) => {
     });
 });
 
-app.get("/redirect", (req, res) => {
+app.get("/redirect", async (req, res) => {
   // Extract the code from the query parameters
   const code = req.query.code;
 
-  console.log("Received code:", code);
+  const response = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      code: req.query.code,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: "http://localhost:8080/redirect",
+      grant_type: "authorization_code",
+    }),
+  });
 
-  const clientId = process.env.GOOGLE_CLIENT_ID;
-  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-  const redirectUri = "http://localhost:8080/redirect";
+  const data = await response.json();
+  const tokens = data;
 
-  const url = "https://oauth2.googleapis.com/token";
+  console.log("tokens :>> ", tokens.access_token);
 
-  res.redirect("http://127.0.0.1:3000");
+  const url = "https://oauth2.googleapis.com/token&code=" + tokens.access_token;
+  console.log("url :>> ", url);
+
+  const redirectUrl = `http://127.0.0.1:3000/?token=${tokens.access_token}&refresh_token=${tokens.refresh_token}`;
+  // redirectUrl.searchParams.append("token", tokens.access_token);
+  res.redirect(redirectUrl);
 });
 
 app.listen(port, () => {
@@ -44,23 +60,22 @@ app.listen(port, () => {
 });
 
 const generateAuthUrl = async () => {
-  const scopes = [
-    "profile",
-    "email",
-    "https://www.googleapis.com/auth/calendar",
-  ];
+  const scopes = ["profile"];
 
   const baseUrl = "https://accounts.google.com/o/oauth2/v2/auth";
-  const params = new URLSearchParams({
-    access_type: "offline",
-    scope: scopes.join(" "),
-    prompt: "consent",
-    response_type: "code",
-    client_id: process.env.GOOGLE_CLIENT_ID, // Replace with your actual client ID
-    redirect_uri: "http://localhost:8080/redirect", // Replace with your actual redirect URI
-  });
+  const scopesString = scopes.join(" ");
+  const accessType = "offline";
+  const prompt = "consent";
+  const responseType = "code";
 
-  const url = `${baseUrl}?${params.toString()}`;
+  // complex strings with more characters, need to encode URI components
+  const clientId = encodeURIComponent(process.env.GOOGLE_CLIENT_ID);
+  const redirectUri = encodeURIComponent("http://localhost:8080/redirect");
+  const scope = encodeURIComponent(scopesString);
+
+  const url = `${baseUrl}?access_type=${accessType}&scope=${scope}&prompt=${prompt}&response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}`;
+
+  console.log("url :>> ", url);
 
   // Fetch request to simulate the generation
   const response = await fetch(url, {
