@@ -11,14 +11,31 @@ const checkIfLoggedIn = async () => {
 const useToken = async () => {
   const token = new URLSearchParams(window.location.search).get("token");
   if (token) {
+    console.log("token available", token);
     return token;
   } else {
     return null;
   }
 };
 
-const getGoogleProfileDataFromGoogleWithToken = async () => {
-  await fetch("");
+const fetchGoogleDriveFiles = async () => {
+  const token = await useToken();
+  if (token) {
+    // google drive 3 api fetch
+    const req = await fetch("https://www.googleapis.com/drive/v3/files", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("getting from all drives");
+
+    const data = await req.json();
+
+    // const data = await req.json();
+    console.log(data);
+  }
 };
 
 checkIfLoggedIn();

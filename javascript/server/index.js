@@ -50,7 +50,7 @@ app.get("/redirect", async (req, res) => {
   const url = "https://oauth2.googleapis.com/token&code=" + tokens.access_token;
   console.log("url :>> ", url);
 
-  const redirectUrl = `http://127.0.0.1:3000/?token=${tokens.access_token}&refresh_token=${tokens.refresh_token}`;
+  const redirectUrl = `http://localhost:3000/?token=${tokens.access_token}&refresh_token=${tokens.refresh_token}`;
   // redirectUrl.searchParams.append("token", tokens.access_token);
   res.redirect(redirectUrl);
 });
@@ -60,7 +60,7 @@ app.listen(port, () => {
 });
 
 const generateAuthUrl = async () => {
-  const scopes = ["profile"];
+  const scopes = ["profile", "email", "https://www.googleapis.com/auth/drive"];
 
   const baseUrl = "https://accounts.google.com/o/oauth2/v2/auth";
   const scopesString = scopes.join(" ");
