@@ -60,7 +60,12 @@ app.listen(port, () => {
 });
 
 const generateAuthUrl = async () => {
-  const scopes = ["profile", "email", "https://www.googleapis.com/auth/drive"];
+  const scopes = [
+    "profile",
+    "email",
+    "https://www.googleapis.com/auth/drive",
+    "https://www.googleapis.com/auth/calendar",
+  ];
 
   const baseUrl = "https://accounts.google.com/o/oauth2/v2/auth";
   const scopesString = scopes.join(" ");
@@ -69,9 +74,9 @@ const generateAuthUrl = async () => {
   const responseType = "code";
 
   // complex strings with more characters, need to encode URI components
-  const clientId = encodeURIComponent(process.env.GOOGLE_CLIENT_ID);
-  const redirectUri = encodeURIComponent("http://localhost:8080/redirect");
-  const scope = encodeURIComponent(scopesString);
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const redirectUri = "http://localhost:8080/redirect";
+  const scope = scopesString;
 
   const url = `${baseUrl}?access_type=${accessType}&scope=${scope}&prompt=${prompt}&response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}`;
 

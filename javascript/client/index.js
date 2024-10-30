@@ -8,20 +8,15 @@ const checkIfLoggedIn = async () => {
   }
 };
 
-const useToken = async () => {
+const useToken = () => {
   const token = new URLSearchParams(window.location.search).get("token");
-  if (token) {
-    console.log("token available", token);
-    return token;
-  } else {
-    return null;
-  }
+  console.log(token);
+  return token;
 };
 
 const fetchGoogleDriveFiles = async () => {
-  const token = await useToken();
+  const token = useToken();
   if (token) {
-    // google drive 3 api fetch
     const req = await fetch("https://www.googleapis.com/drive/v3/files", {
       method: "GET",
       headers: {
@@ -33,7 +28,24 @@ const fetchGoogleDriveFiles = async () => {
 
     const data = await req.json();
 
-    // const data = await req.json();
+    console.log(data);
+  }
+};
+
+const fetchCalendarEvents = async () => {
+  const token = useToken();
+  if (token) {
+    const req = await fetch(
+      "https://www.googleapis.com/calendar/v3/calendars/primary/events",
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await req.json();
     console.log(data);
   }
 };
@@ -41,7 +53,6 @@ const fetchGoogleDriveFiles = async () => {
 checkIfLoggedIn();
 
 const login = async () => {
-  document.getElementById("login").innerHTML = "Loading...";
   const req = await fetch("http://localhost:8080/authLink", {
     method: "GET",
   });
