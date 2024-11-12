@@ -12,14 +12,11 @@ app.use((req, res, next) => {
 });
 
 app.get("/authlink", async (req, res) => {
-  // Example usage
   generateAuthUrl()
     .then((authUrl) => {
-      console.log("Generated Auth URL:", authUrl);
       res.json({ authUrl: authUrl });
     })
     .catch((error) => {
-      console.error("Error generating auth URL:", error);
       res.status(500).json({ error: "Failed to generate auth URL" });
     });
 });
@@ -48,10 +45,8 @@ app.get("/redirect", async (req, res) => {
   console.log("tokens :>> ", tokens.access_token);
 
   const url = "https://oauth2.googleapis.com/token&code=" + tokens.access_token;
-  console.log("url :>> ", url);
 
   const redirectUrl = `http://localhost:3000/?token=${tokens.access_token}&refresh_token=${tokens.refresh_token}`;
-  // redirectUrl.searchParams.append("token", tokens.access_token);
   res.redirect(redirectUrl);
 });
 
@@ -60,12 +55,7 @@ app.listen(port, () => {
 });
 
 const generateAuthUrl = async () => {
-  const scopes = [
-    "profile",
-    "email",
-    "https://www.googleapis.com/auth/drive",
-    "https://www.googleapis.com/auth/calendar",
-  ];
+  const scopes = ["profile"];
 
   const baseUrl = "https://accounts.google.com/o/oauth2/v2/auth";
   const scopesString = scopes.join(" ");
@@ -73,15 +63,19 @@ const generateAuthUrl = async () => {
   const prompt = "consent";
   const responseType = "code";
 
-  // complex strings with more characters, need to encode URI components
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const redirectUri = "http://localhost:8080/redirect";
   const scope = scopesString;
 
-  const url = `${baseUrl}?access_type=${accessType}&scope=${scope}&prompt=${prompt}&response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}`;
-
-  console.log("url :>> ", url);
-
+  const url = `
+    ${baseUrl}?
+    access_type=${accessType}&
+    scope=${scope}&
+    prompt=${prompt}&
+    response_type=${responseType}&
+    client_id=${clientId}&
+    redirect_uri=${redirectUri}
+  `;
   // Fetch request to simulate the generation
   const response = await fetch(url, {
     method: "GET",

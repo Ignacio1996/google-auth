@@ -32,7 +32,7 @@ const fetchGoogleDriveFiles = async () => {
   }
 };
 
-const fetchCalendarEvents = async () => {
+const fetchGoogleCalendarEvents = async () => {
   const token = useToken();
   if (token) {
     const req = await fetch(

@@ -1,13 +1,13 @@
 <body>
   <div>Javascript Simple Login</div>
   <button id="login" onclick="login()">Login with Google</button>
-  <button id="token" class="" onclick="useToken()">Token</button>
-  <button id="token" class="" onclick="fetchGoogleDriveFiles()">
-    Get Drive Files
-  </button>
-  <button id="token" class="" onclick="fetchCalendarEvents()">
-    Get Calendar
-  </button>
+
+  <!-- After user is authenticated, we'll change the display style to block -->
+  <div class="authenticated-container" style="display: none">
+    <button onclick="useToken()">Token</button>
+    <button onclick="fetchGoogleDriveFiles()">Get Drive Files</button>
+    <button onclick="fetchGoogleCalendarEvents()">Get Calendar</button>
+  </div>
 </body>
 
 <script src="./index.js"></script>
